@@ -2,7 +2,11 @@
 
 Biblioteca independente de prompts com interface em português, cinco categorias, pesquisa, filtros por fonte/idioma, favoritos locais, exportação JSON, personalização e cópia. Destaque para `/albumcover`.
 
-## Executar
+A versão publicada no [GitHub Pages](https://jrrjunior-code.github.io/atalho-prompts/) é compilada a partir de [atalho-astro](atalho-astro/).
+
+Para executar essa versão localmente, use `cd atalho-astro && npm ci && npm run dev` e abra http://localhost:4321/atalho/.
+
+## Executar a versão HTML da raiz
 
 Requisito: Node.js 18 ou superior. Não há dependências de produção para instalar.
 

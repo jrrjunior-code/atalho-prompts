@@ -23,9 +23,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: atalho-astro/package-lock.json
+      - name: Preparar e compilar o Atalho
+        working-directory: atalho-astro
+        env:
+          ATALHO_BASE_PATH: /atalho-prompts/
+        run: |
+          npm ci
+          npm run check:catalog
+          npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: atalho-astro/dist
       - name: Aguardar registro do artefato
         run: sleep 15
       - id: deployment

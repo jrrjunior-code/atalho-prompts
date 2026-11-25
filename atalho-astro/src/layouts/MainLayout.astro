@@ -1,0 +1,290 @@
+---
+/**
+ * Atalho - Main Layout
+ * Root layout with sidebar, header, and main content area
+ */
+
+import '@/styles/tokens.css';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Atalho — Menos começar do zero. Mais criar.', description = 'Uma biblioteca aberta de prompts e atalhos para criar imagens, escrever, estudar, programar e desenvolver negócios. Explore, personalize e copie.' } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+const basePrefix = baseUrl.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f3f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1524" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content={description} />
+    <meta name="plausible-domain" content="" />
+    <meta name="ga-measurement-id" content="" />
+    <title>{title}</title>
+    <link rel="icon" href={`${basePrefix}/favicon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${basePrefix}/brandkit/assets/favicon-192.png`} />
+    <link rel="manifest" href={`${basePrefix}/manifest.webmanifest`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;750;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="font-sans antialiased">
+    <a href="#catalogo" class="skip-link">Pular para o catálogo</a>
+
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <a href={baseUrl} class="brand" aria-label="Atalho, início">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        atalho<span class="brand-dot">.</span>
+      </a>
+
+      <div class="workspace-label">Biblioteca</div>
+
+      <nav aria-label="Navegação principal">
+        <button class="nav-item active" data-view="all" aria-pressed="true">
+          <span class="nav-icon" aria-hidden="true">▦</span>
+          Explorar biblioteca
+        </button>
+        <button class="nav-item" data-view="favorites" aria-pressed="false">
+          <span class="nav-icon" aria-hidden="true">♡</span>
+          Meus favoritos
+          <span id="favorite-count" class="nav-count">0</span>
+        </button>
+      </nav>
+
+      <div class="workspace-label category-label">Categorias</div>
+
+      <nav class="category-nav" aria-label="Categorias">
+        <button class="nav-item" data-category="imagens" aria-pressed="false">
+          <span class="category-dot category-dot-images" aria-hidden="true"></span>
+          Imagens <small data-count="imagens">—</small>
+        </button>
+        <button class="nav-item" data-category="escrita" aria-pressed="false">
+          <span class="category-dot category-dot-escrita" aria-hidden="true"></span>
+          Escrita <small data-count="escrita">—</small>
+        </button>
+        <button class="nav-item" data-category="estudos" aria-pressed="false">
+          <span class="category-dot category-dot-estudos" aria-hidden="true"></span>
+          Estudos <small data-count="estudos">—</small>
+        </button>
+        <button class="nav-item" data-category="programacao" aria-pressed="false">
+          <span class="category-dot category-dot-programacao" aria-hidden="true"></span>
+          Programação <small data-count="programacao">—</small>
+        </button>
+        <button class="nav-item" data-category="negocios" aria-pressed="false">
+          <span class="category-dot category-dot-negocios" aria-hidden="true"></span>
+          Negócios <small data-count="negocios">—</small>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="nav-item secondary" id="sources-button" aria-label="Fontes e transparência">
+          <span class="nav-icon" aria-hidden="true">↗</span> Fontes e transparência
+        </button>
+      </div>
+    </aside>
+
+    <div class="mobile-overlay" id="mobile-overlay" hidden aria-hidden="true"></div>
+
+    <div class="main-shell">
+      <header class="topbar" role="banner">
+        <button class="icon-button menu-button" id="menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+          <span aria-hidden="true">☰</span>
+        </button>
+
+        <nav class="breadcrumb" aria-label="Navegação estrutural">
+          <span>Biblioteca</span>
+          <span aria-hidden="true">/</span>
+          <strong id="breadcrumb-current">Explorar</strong>
+        </nav>
+
+        <div class="top-actions">
+          <button class="help-button" id="guide-button" aria-label="Como usar">
+            <span aria-hidden="true">?</span> Como usar
+          </button>
+          <button class="icon-button theme-toggle" id="theme-toggle" aria-label="Alternar tema" aria-pressed="false">
+            <span class="icon-sun" aria-hidden="true">☀</span>
+            <span class="icon-moon" aria-hidden="true">🌙</span>
+          </button>
+        </div>
+      </header>
+
+      <main id="main-content" role="main">
+        <slot />
+      </main>
+
+      <footer class="footer" role="contentinfo">
+        <a href={baseUrl} class="footer-brand">atalho.</a>
+        <span>Uma biblioteca independente. Sem afiliação à OpenAI.</span>
+        <button class="text-button" id="footer-sources" aria-label="Sobre os dados">Sobre os dados</button>
+      </footer>
+    </div>
+
+    <!-- Prompt Dialog -->
+    <dialog id="prompt-dialog" class="prompt-dialog" aria-labelledby="prompt-title" aria-modal="true">
+      <form method="dialog">
+        <div class="dialog-top">
+          <span class="eyebrow">Personalizar prompt</span>
+          <button class="icon-button close-dialog" aria-label="Fechar" value="cancel">×</button>
+        </div>
+
+        <div class="prompt-intro">
+          <div class="eyebrow" id="prompt-category"></div>
+          <h2 id="prompt-title"></h2>
+          <code id="prompt-shortcut"></code>
+          <p id="prompt-description"></p>
+        </div>
+
+        <div class="prompt-metadata" id="prompt-metadata"></div>
+
+        <div class="prompt-workspace">
+          <div id="fields-panel">
+            <h3>Personalização</h3>
+            <p class="field-hint">Preencha os campos. O prompt se atualiza ao lado.</p>
+            <div id="custom-fields"></div>
+
+            <label class="context-label" for="extra-context">
+              Seu contexto <span>opcional</span>
+            </label>
+            <textarea id="extra-context" rows="3" placeholder="Acrescente detalhes, restrições ou preferências…"></textarea>
+
+            <label class="checkbox-label">
+              <input id="portuguese-output" type="checkbox" />
+              Pedir resposta em português
+            </label>
+          </div>
+
+          <div class="prompt-editor">
+            <h3>Texto do prompt</h3>
+            <label class="sr-only" for="prompt-text">Texto do prompt editável</label>
+            <textarea id="prompt-text" spellcheck="false" readonly></textarea>
+            <p class="editor-hint">Você também pode editar o texto diretamente.</p>
+          </div>
+        </div>
+
+        <div class="source-line" id="prompt-sources"></div>
+
+        <p id="dialog-status" role="status"></p>
+        <div class="dialog-actions">
+          <button type="button" class="btn btn-secondary" id="modal-favorite">♡ Salvar favorito</button>
+          <button type="button" class="btn btn-primary" id="copy-prompt">Copiar prompt <span aria-hidden="true">⧉</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Info Dialog -->
+    <dialog id="info-dialog" class="info-dialog" aria-labelledby="info-title" aria-modal="true">
+      <form method="dialog">
+        <div class="dialog-top">
+          <span class="eyebrow">ATALHO · BIBLIOTECA ABERTA</span>
+          <button class="icon-button close-dialog" aria-label="Fechar" value="cancel">×</button>
+        </div>
+        <div id="info-content"></div>
+      </form>
+    </dialog>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Hydration script -->
+    <script>
+      import '@/entrypoints/app';
+    </script>
+  </body>
+</html>
+
+<style>
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 15rem;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: var(--color-navy);
+    color: var(--color-on-navy);
+    z-index: var(--z-fixed);
+    transition: transform .2s ease;
+  }
+  .brand { display: flex; align-items: center; gap: .625rem; color: var(--color-on-navy); font-size: 2rem; font-weight: 800; letter-spacing: -.06em; margin: 0 .5rem 2.5rem; }
+  .brand-mark { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: .55rem; background: var(--color-on-navy-accent); color: var(--color-navy); font-size: 1.4rem; }
+  .brand-dot { color: var(--color-on-navy-accent); margin-left: -.625rem; }
+  .workspace-label { margin: 0 .65rem .5rem; color: var(--color-on-navy-muted); font: 500 .75rem var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }
+  .category-label { margin-top: 1.75rem; }
+  .nav-item {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    padding: .5rem .65rem;
+    border-radius: .55rem;
+    color: var(--color-on-navy);
+    background: transparent;
+    text-align: left;
+    font-size: .9rem;
+  }
+  .sidebar :focus-visible { outline-color: var(--color-on-navy-accent-hover); }
+  .nav-item:hover { background: var(--color-navy-raised); }
+  .nav-item.active { background: var(--color-on-navy-accent); color: var(--color-navy); font-weight: 750; }
+  .nav-icon { width: 1.15rem; text-align: center; font-size: 1.15rem; }
+  .nav-item small, .nav-count { margin-left: auto; font: 500 .75rem var(--font-mono); }
+  .category-dot { width: .5rem; height: .5rem; margin: 0 .325rem; border-radius: 50%; background: currentColor; }
+  .sidebar-bottom { margin-top: auto; padding-top: 1.5rem; }
+  .sidebar-bottom button { border-top: 1px solid var(--color-navy-border); }
+
+  .main-shell { margin-left: 15rem; min-height: 100vh; }
+  .topbar {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .625rem;
+    padding-inline: clamp(1rem, 3vw, 3rem);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: var(--color-surface-elevated);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .breadcrumb { display: flex; gap: .5rem; min-width: 0; align-items: center; color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumb strong { color: var(--color-text-primary); }
+  .top-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+  .help-button, .theme-toggle, .menu-button, .close-dialog {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 .625rem;
+    border: 1px solid var(--color-border);
+    border-radius: .6rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    font-size: .875rem;
+  }
+  .help-button:hover, .theme-toggle:hover, .menu-button:hover, .close-dialog:hover { background: var(--color-surface-sunken); }
+  .menu-button, .icon-sun, :global([data-theme="dark"]) .icon-moon { display: none; }
+  :global([data-theme="dark"]) .icon-sun { display: inline; }
+  main { max-width: 100rem; margin-inline: auto; padding: clamp(1rem, 3vw, 3rem); }
+  .mobile-overlay { position: fixed; inset: 0; background: #0d1524bb; z-index: calc(var(--z-fixed) - 1); }
+  .footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; border-top: 1px solid var(--color-border); padding: 1rem clamp(1rem, 3vw, 3rem); font-size: .875rem; color: var(--color-text-muted); }
+  .footer-brand { color: var(--color-text-primary); font-size: 1.25rem; font-weight: 800; }
+  .text-button { background: transparent; color: inherit; text-decoration: underline; min-height: 44px; }
+
+  @media (max-width: 1024px) {
+    .sidebar { transform: translateX(-100%); visibility: hidden; width: min(17rem, 85vw); }
+    .sidebar.mobile-open { transform: translateX(0); visibility: visible; }
+    .main-shell { margin-left: 0; }
+    .menu-button { display: grid; place-items: center; }
+    .breadcrumb { margin-right: auto; }
+  }
+  @media (max-width: 450px) {
+    .breadcrumb span { display: none; }
+    .help-button span { display: none; }
+  }
+</style>

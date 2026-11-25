@@ -1,0 +1,378 @@
+---
+/**
+ * Atalho - Prompt Card Component
+ * Individual prompt card for the catalog grid
+ */
+
+interface Props {
+  item: {
+    id: string;
+    title: string;
+    shortcut: string;
+    category: string;
+    description: string | null;
+    origins: Array<{ source: string; url: string }>;
+    featured: boolean;
+    language: string;
+    image: string;
+  };
+  sourceName: string;
+  sourceModel: string;
+  isFavorite: boolean;
+}
+
+const { item, sourceName, sourceModel, isFavorite } = Astro.props;
+
+const categoryNames: Record<string, string> = {
+  imagens: 'Imagens',
+  escrita: 'Escrita',
+  estudos: 'Estudos',
+  programacao: 'Programação',
+  negocios: 'Negócios',
+};
+
+const categoryIcons: Record<string, string> = {
+  imagens: '✧',
+  escrita: '✎',
+  estudos: '▱',
+  programacao: '⌘',
+  negocios: '↗',
+};
+
+const categoryPhrases: Record<string, string> = {
+  imagens: 'Imagine o que vem a seguir.',
+  escrita: 'Palavras que<br>abrem caminhos.',
+  estudos: 'Sempre há algo<br>para descobrir.',
+  programacao: 'Uma ideia.<br>Infinitas soluções.',
+  negocios: 'O próximo passo<br>começa aqui.',
+};
+
+const look = item.category;
+const categoryLabel = categoryNames[look] || look;
+const symbol = categoryIcons[look] || '•';
+const phrase = categoryPhrases[look] || '';
+const safeImage = item.image && /^https?:\/\//.test(item.image) ? item.image : '';
+---
+
+<article class="prompt-card" role="listitem">
+  <div class="card-cover {look}">
+    <div class="cover-art">
+      <div class="cover-text">
+        <small>{symbol}  ATALHO PARA {categoryLabel.toUpperCase()}</small>
+        {phrase.split('<br>').map((line, i) => (
+          <>
+            {i > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </div>
+    </div>
+
+    {safeImage && (
+      <img
+        src={safeImage}
+        alt={`Exemplo da fonte: ${item.title}`}
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        class="cover-image"
+        onerror="this.remove()"
+      />
+    )}
+
+    <button class="cover-open" aria-label={`Personalizar: ${item.title}`} data-prompt-id={item.id} type="button"></button>
+
+    <button class="favorite-button {isFavorite ? 'saved' : ''}" data-favorite-id={item.id} aria-label={isFavorite ? `Remover dos favoritos: ${item.title}` : `Salvar favorito: ${item.title}`} aria-pressed={isFavorite} type="button">
+      {isFavorite ? '♥' : '♡'}
+    </button>
+
+    {item.featured && (
+      <span class="card-badge">
+        {item.shortcut === '/albumcover' ? '✳ Atalho em destaque' : '✦ Seleção editorial'}
+      </span>
+    )}
+  </div>
+
+  <div class="card-body">
+    <div class="card-category">
+      {categoryLabel}
+      <span class="model-badge">{sourceModel}</span>
+    </div>
+    <button class="card-title" data-prompt-id={item.id} type="button">{item.title}</button>
+    <code class="card-code">{item.shortcut}</code>
+    <p class="card-description">
+      {item.description || (item.language === 'pt' ? 'Personalize os detalhes e transforme esta ideia em algo seu.' : 'Prompt internacional. Explore o original e personalize o resultado.')}
+    </p>
+  </div>
+
+  <div class="card-footer">
+    {item.origins[0]?.url ? (
+      <a href={item.origins[0].url} target="_blank" rel="noopener noreferrer" class="card-source">{sourceName}</a>
+    ) : (
+      <span class="card-source">{sourceName}</span>
+    )}
+    <button class="btn btn-secondary btn-sm card-copy" data-copy-id={item.id} type="button">Copiar prompt ⧉</button>
+  </div>
+</article>
+
+<style>
+  .prompt-card {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: box-shadow var(--duration-200) var(--ease-out), transform var(--duration-200) var(--ease-out);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prompt-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .card-cover {
+    position: relative;
+    height: 165px;
+    overflow: hidden;
+  }
+
+  .card-cover.imagens { background: var(--color-category-images-bg); }
+  .card-cover.escrita { background: var(--color-category-escrita-bg); }
+  .card-cover.estudos { background: var(--color-category-estudos-bg); }
+  .card-cover.programacao { background: var(--color-category-programacao-bg); }
+  .card-cover.negocios { background: var(--color-category-negocios-bg); }
+
+  .cover-art {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: var(--space-4);
+    pointer-events: none;
+  }
+
+  .cover-text {
+    text-align: center;
+    color: var(--color-paper-0);
+    text-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  }
+
+  .cover-text small {
+    display: block;
+    font-size: 0.5625rem;
+    letter-spacing: 0.0625rem;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    opacity: 0.9;
+  }
+
+  .cover-text br { display: block; content: ''; margin: 0.125rem 0; }
+
+  .cover-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform var(--duration-500) var(--ease-out);
+  }
+
+  .prompt-card:hover .cover-image {
+    transform: scale(1.05);
+  }
+
+  .cover-open {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .favorite-button {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    z-index: 3;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-content: center;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-150) var(--ease-out);
+  }
+
+  .favorite-button:hover {
+    background: var(--color-surface-sunken);
+    color: var(--color-text-primary);
+    transform: scale(1.1);
+  }
+
+  .favorite-button.saved {
+    color: #ef4444;
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
+
+  [data-theme="dark"] .favorite-button.saved {
+    background: #450a0a;
+    border-color: #7f1d1d;
+    color: #f87171;
+  }
+
+  .favorite-button:focus-visible {
+    outline: 3px solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  .card-badge {
+    position: absolute;
+    bottom: var(--space-2);
+    left: var(--space-2);
+    font-size: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 3;
+  }
+
+  .card-body {
+    padding: var(--space-4) var(--space-4) 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .card-category {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.0625rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .model-badge {
+    font-size: 0.5rem;
+    padding: 0.0625rem 0.3125rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .card-title {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: var(--color-text-primary);
+    text-align: left;
+    margin-bottom: var(--space-2);
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color var(--duration-150) var(--ease-out);
+  }
+
+  .card-title:hover { color: var(--color-primary); }
+
+  .card-code {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    background: var(--color-surface-sunken);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-2);
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-description {
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  .card-source {
+    font-size: 0.5625rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-150) var(--ease-out);
+  }
+
+  .card-source:hover { color: var(--color-primary); }
+
+  .card-copy {
+    font-size: 0.625rem;
+    padding: var(--space-1) var(--space-2);
+    gap: var(--space-1);
+  }
+
+  @media (max-width: 1200px) {
+    .card-body { padding: var(--space-3) var(--space-3) 0; }
+    .card-footer { padding: var(--space-2) var(--space-3); }
+    .card-title { font-size: 0.875rem; }
+  }
+
+  @media (max-width: 1000px) {
+    .card-cover { height: 165px; }
+  }
+
+  @media (max-width: 760px) {
+    .card-cover { height: 165px; }
+    .card-body { padding: var(--space-3) var(--space-3) 0; }
+    .card-title { font-size: 0.875rem; }
+    .card-description { font-size: 0.6875rem; }
+    .card-footer { padding: var(--space-2) var(--space-3); }
+    .card-source { font-size: 0.5625rem; }
+    .card-copy { font-size: 0.625rem; }
+  }
+
+  @media (max-width: 480px) {
+    .card-cover { height: 195px; }
+    .card-body { padding: var(--space-4) var(--space-4) 0; }
+    .card-title { font-size: 1.0625rem; }
+    .card-description { font-size: 0.6875rem; }
+    .card-footer { padding: var(--space-3) var(--space-4); }
+    .card-source { font-size: 0.5625rem; }
+    .card-copy { font-size: 0.625rem; }
+    .card-code { font-size: 0.6875rem; }
+    .card-category { font-size: 0.5625rem; }
+    .model-badge { font-size: 0.5rem; }
+  }
+</style>

@@ -1,0 +1,97 @@
+{
+  "updatedAt": "2026-11-25T04:40:02.716Z",
+  "total": 36892,
+  "sources": [
+    {
+      "id": "editorial",
+      "name": "Atalho · seleção editorial",
+      "url": "",
+      "model": "ChatGPT",
+      "announced": null,
+      "imported": 8,
+      "extracted": 8
+    },
+    {
+      "id": "maestro",
+      "name": "Mestre dos Prompts",
+      "url": "https://codigos.maestroprompts.chatgpt.site/",
+      "model": "ChatGPT",
+      "announced": 300,
+      "imported": 300,
+      "extracted": 300
+    },
+    {
+      "id": "prompts-chat",
+      "name": "prompts.chat",
+      "url": "https://github.com/f/prompts.chat",
+      "model": "ChatGPT",
+      "announced": null,
+      "imported": 3169,
+      "extracted": 3174
+    },
+    {
+      "id": "youmind-gpt",
+      "name": "YouMind · GPT Image 2",
+      "url": "https://github.com/YouMind-OpenLab/gpt-image-2-prompts-search",
+      "model": "GPT Image 2",
+      "announced": 18144,
+      "imported": 18084,
+      "extracted": 18106,
+      "manifestTotal": 18144
+    },
+    {
+      "id": "youmind-nano",
+      "name": "YouMind · Nano Banana Pro",
+      "url": "https://github.com/YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill",
+      "model": "Nano Banana Pro",
+      "announced": 15860,
+      "imported": 14996,
+      "extracted": 15319,
+      "manifestTotal": 15861
+    },
+    {
+      "id": "gpt4o",
+      "name": "Awesome GPT-4o Images",
+      "url": "https://github.com/jamez-bondos/awesome-gpt4o-images",
+      "model": "GPT-4o",
+      "announced": null,
+      "imported": 100,
+      "extracted": 100
+    },
+    {
+      "id": "imgedify",
+      "name": "ImgEdify",
+      "url": "https://github.com/ImgEdify/Awesome-GPT4o-Image-Prompts",
+      "model": "GPT-4o",
+      "announced": null,
+      "imported": 76,
+      "extracted": 76
+    },
+    {
+      "id": "pixmind",
+      "name": "Pixmind",
+      "url": "https://github.com/Pixmind-io/awesome-gpt-image-2-prompts",
+      "model": "GPT Image 2",
+      "announced": null,
+      "imported": 148,
+      "extracted": 150
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram · @poderartificial",
+      "url": "https://www.instagram.com/p/DdIxjB1SSoF/",
+      "model": "ChatGPT",
+      "announced": 20,
+      "imported": 20,
+      "extracted": 20
+    }
+  ],
+  "categories": {
+    "imagens": 33717,
+    "escrita": 2741,
+    "estudos": 107,
+    "programacao": 179,
+    "negocios": 148
+  },
+  "methodology": "Registros com texto não vazio; IDs YouMind deduplicados entre categorias e textos normalizados deduplicados entre todas as fontes. Importação verificada não significa eficácia testada. Textos internacionais preservados no idioma disponibilizado pela fonte."
+}

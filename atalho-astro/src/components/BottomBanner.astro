@@ -1,0 +1,61 @@
+---
+/**
+ * Atalho - Bottom Banner
+ * Call to action at the bottom of the page
+ */
+---
+
+<section class="bottom-banner">
+  <span class="banner-star" aria-hidden="true">✳</span>
+  <div>
+    <h2>Seu jeito de criar é único.</h2>
+    <p>Use os prompts como ponto de partida. O toque final é seu.</p>
+  </div>
+  <button class="btn btn-secondary" id="bottom-guide">Aprenda a personalizar <span aria-hidden="true">↗</span></button>
+</section>
+
+<style>
+  .bottom-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-8);
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    margin-top: var(--space-10);
+  }
+
+  .banner-star {
+    font-size: 2.0625rem;
+    color: var(--color-lime-600);
+    flex-shrink: 0;
+  }
+
+  .bottom-banner > div { max-width: 480px; }
+
+  .bottom-banner h2 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .bottom-banner p {
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 760px) {
+    .bottom-banner { flex-wrap: wrap; padding: var(--space-5) var(--space-5); gap: var(--space-3); }
+    .bottom-banner h2 { font-size: 1rem; }
+    .bottom-banner button { margin-left: auto; }
+  }
+
+  @media (max-width: 480px) {
+    .bottom-banner { flex-wrap: wrap; gap: var(--space-3); padding: var(--space-5) var(--space-4); }
+    .bottom-banner > div { max-width: 14.0625rem; }
+    .bottom-banner h2 { font-size: 1.0625rem; }
+    .bottom-banner p { font-size: 0.625rem; line-height: 1.7; }
+    .bottom-banner button { margin-left: auto; font-size: 0.5625rem; padding: var(--space-2) var(--space-3); }
+  }
+</style>

@@ -1,0 +1,181 @@
+---
+/**
+ * Atalho - Catalog Section
+ * Main catalog with search, filters, and pagination
+ */
+
+const categories = [
+  { key: 'imagens', label: 'Imagens', icon: '✧' },
+  { key: 'escrita', label: 'Escrita', icon: '✎' },
+  { key: 'estudos', label: 'Estudos', icon: '▱' },
+  { key: 'programacao', label: 'Programação', icon: '⌘' },
+  { key: 'negocios', label: 'Negócios', icon: '↗' },
+] as const;
+
+const sortOptions = [
+  { value: 'featured', label: 'Destaques primeiro' },
+  { value: 'az', label: 'Nome: A → Z' },
+  { value: 'za', label: 'Nome: Z → A' },
+] as const;
+---
+
+<section class="catalog" id="catalogo" aria-labelledby="catalog-title">
+  <div class="catalog-heading">
+    <div>
+      <h2 id="catalog-title">Catálogo de prompts</h2>
+      <p id="catalog-description">Busque por tema ou /atalho e refine os resultados pelos filtros.</p>
+    </div>
+    <button class="btn btn-secondary" id="export-button" hidden>Exportar favoritos</button>
+    <span class="catalog-total" id="catalog-total">Preparando catálogo…</span>
+  </div>
+
+  <div class="catalog-controls">
+    <div class="search-row">
+      <label class="search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <path d="m16 16 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+        <input id="search" type="search" placeholder="Buscar por tema ou /atalho" autocomplete="off" aria-label="Buscar prompts" />
+        <kbd>/</kbd>
+      </label>
+
+      <label class="select-wrap">
+        <span class="sr-only">Fonte</span>
+        <select id="source-filter" aria-label="Filtrar por fonte">
+          <option value="">Todas as fontes</option>
+        </select>
+      </label>
+
+      <label class="select-wrap language-select">
+        <span class="sr-only">Idioma</span>
+        <select id="language-filter" aria-label="Filtrar por idioma">
+          <option value="">Todos os idiomas</option>
+          <option value="pt">Em português</option>
+          <option value="original">Internacionais</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="filter-row">
+      <div class="tabs" role="group" aria-label="Filtrar categoria">
+        <button class="tab active" data-category="" aria-pressed="true">Todos <span id="all-count">—</span></button>
+        {categories.map(({ key, label, icon }) => (
+          <button class="tab" data-category={key} aria-pressed="false">{icon} {label}</button>
+        ))}
+      </div>
+
+      <label class="sort-label">
+        <span class="sr-only">Ordenação</span>
+        <select id="sort" aria-label="Ordenar por">
+          {sortOptions.map(({ value, label }) => (
+            <option value={value}>{label}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+
+  </div>
+
+  <div class="result-line">
+    <span id="result-count" role="status">Carregando fontes e prompts…</span>
+    <button class="btn btn-secondary btn-sm" id="clear-filters" hidden>Limpar filtros ×</button>
+  </div>
+
+  <div class="cards-wrapper" id="cards-wrapper" role="list" aria-busy="true">
+    <div class="cards-grid" id="cards-container">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  </div>
+
+  <div class="empty-state" id="empty" hidden>
+    <span aria-hidden="true">⌕</span>
+    <h3>Nenhum prompt por aqui. Ainda.</h3>
+    <p>Tente outro termo ou explore uma nova categoria.</p>
+    <button class="btn btn-primary" id="empty-reset">Explorar todos os prompts</button>
+  </div>
+
+  <nav class="pagination" aria-label="Páginas do catálogo">
+    <button id="prev-page" class="btn btn-secondary btn-sm" disabled>Anterior</button>
+    <span id="page-label">Página 1</span>
+    <button id="next-page" class="btn btn-secondary btn-sm" disabled>Próxima</button>
+  </nav>
+</section>
+
+<style>
+  .catalog { padding-top: clamp(2rem, 5vw, 4rem); scroll-margin-top: 5rem; }
+  .catalog-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .catalog h2 { margin: 0 0 .35rem; font-size: clamp(1.65rem, 3vw, 2.4rem); letter-spacing: -.045em; }
+  .catalog-heading p { margin: 0; color: var(--color-text-muted); }
+  .catalog-total { font: 500 .8125rem var(--font-mono); color: var(--color-text-muted); }
+
+  .catalog-controls {
+    padding: clamp(.75rem, 1.5vw, 1.25rem);
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+  }
+  .search-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: .625rem; }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    padding: 0 .75rem;
+    border: 1px solid var(--color-border);
+    border-radius: .625rem;
+    background: var(--color-surface);
+  }
+  .search-box:focus-within { outline: 2px solid var(--color-border-focus); outline-offset: 2px; }
+  .search-box svg { width: 1.25rem; flex-shrink: 0; color: var(--color-text-muted); }
+  .search-box input { min-height: 48px; min-width: 0; padding: 0; background: transparent; border: 0; box-shadow: none; font-size: 1rem; }
+  .search-box kbd { border: 1px solid var(--color-border); border-radius: .25rem; padding: 0 .32rem; }
+  .search-row label, .sort-label { margin: 0; min-width: 0; }
+  .select-wrap select, .sort-label select { min-height: 48px; font-size: .875rem; }
+  .filter-row, .result-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .625rem;
+    margin-top: .75rem;
+  }
+  .tabs { display: flex; flex-wrap: wrap; gap: .375rem; }
+  .tab {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: .5rem;
+    min-height: 44px;
+    padding: .375rem .72rem;
+    color: var(--color-text-secondary);
+    font-size: .875rem;
+  }
+  .tab:hover { background: var(--color-surface-sunken); }
+  .tab.active { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-text-primary); font-weight: 700; }
+  .tab span { margin-left: .25rem; font-size: .75rem; }
+  .result-line { color: var(--color-text-muted); font-size: .875rem; min-height: 44px; margin-block: .75rem; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.25rem), 1fr)); gap: 1rem; }
+  .cards-grid > .skeleton { height: 20rem; }
+  .empty-state { text-align: center; padding: 2.5rem 1rem; background: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: 1rem; }
+  .empty-state > span { font-size: 2rem; }
+  .empty-state h3 { margin-block: .5rem; }
+  .empty-state p { margin-bottom: 1rem; }
+  .pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .75rem; margin: 1.5rem 0; font-size: .875rem; }
+
+  @media (max-width: 700px) {
+    .search-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .search-box { grid-column: 1 / -1; }
+  }
+  @media (pointer: coarse) {
+    .search-box kbd { display: none; }
+  }
+</style>

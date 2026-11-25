@@ -1,0 +1,65 @@
+---
+/**
+ * Atalho - Discovery Strip
+ * Benefits strip between hero and catalog
+ */
+
+const benefits = [
+  { icon: '↗', text: 'Da inspiração à ação' },
+  { icon: '⌘', text: 'Personalize antes de copiar' },
+  { icon: '♡', text: 'Salve suas melhores descobertas' },
+  { icon: '◎', text: 'Fontes sempre à vista' },
+] as const;
+---
+
+<section class="discovery-strip" aria-label="Benefícios">
+  {benefits.map(({ icon, text }) => (
+    <div>
+      <span aria-hidden="true">{icon}</span>
+      {text}
+    </div>
+  ))}
+</section>
+
+<style>
+  .discovery-strip {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4) 0;
+    margin-top: var(--space-3);
+    gap: var(--space-4);
+  }
+
+  .discovery-strip div {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.5625rem;
+    color: var(--color-text-muted);
+  }
+
+  .discovery-strip span {
+    font-size: 1.0625rem;
+    color: var(--color-lime-600);
+  }
+
+  @media (max-width: 1000px) {
+    .discovery-strip div { font-size: 0.5rem; }
+    .discovery-strip div:last-child { display: none; }
+  }
+
+  @media (max-width: 760px) {
+    .discovery-strip { margin-top: var(--space-5); gap: var(--space-1); padding-block: var(--space-3); }
+    .discovery-strip div { font-size: 0.5rem; gap: var(--space-1); }
+    .discovery-strip span { font-size: 0.875rem; }
+    .discovery-strip div:nth-child(3) { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .discovery-strip div { font-size: 0.4375rem; }
+    .discovery-strip div:nth-child(3) { display: none; }
+    .discovery-strip { justify-content: space-around; }
+  }
+</style>
