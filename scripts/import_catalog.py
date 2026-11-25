@@ -89,9 +89,14 @@ def main():
     for cat in raw["categories"]:
         for item in cat["items"]:
             body = item.get("prompt") or f"Use a imagem enviada como referência, se houver. Aplique o atalho personalizado {item['code']}: {item['description']} Preserve as características reconhecíveis do assunto principal. Defina uma composição intencional, iluminação coerente e detalhes naturais. Entregue a imagem final em {item.get('format', '4:5')}, sem marca-d’água."
-            add("maestro", item["number"], item["description"].rstrip("."), body, "imagens",
+            number = item["number"]
+            # Thumbs presentes em thumbs/ têm prioridade sobre o hotlink da fonte.
+            local_thumb = ROOT / "thumbs" / f"maestro-{number}.webp"
+            image = (f"thumbs/maestro-{number}.webp" if local_thumb.exists()
+                     else s["url"]+"assets/thumbs/"+str(number)+".webp?v=300")
+            add("maestro", number, item["description"].rstrip("."), body, "imagens",
                 shortcut=item["code"], description=cat["name"], language="pt",
-                image=s["url"]+"assets/thumbs/"+str(item["number"])+".webp?v=300",
+                image=image,
                 url=s["url"], featured=item["code"] in ["/albumcover", "/editorial", "/goldenhour", "/cinematic", "/product"])
             s["extracted"] += 1
     print("Mestre: dados importados", flush=True)

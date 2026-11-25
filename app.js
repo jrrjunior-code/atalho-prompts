@@ -24,6 +24,11 @@ function el(tag, className, text) {
 function safeURL(value) {
   try { const u = new URL(value); return ['https:', 'http:'].includes(u.protocol) ? u.href : ''; } catch { return ''; }
 }
+function safeImageSrc(value) {
+  if (!value) return '';
+  if (/^thumbs\/[\w.-]+\.webp$/i.test(value)) return value;
+  return safeURL(value);
+}
 function externalLink(label, url, className) {
   const link = el('a', className, label);
   link.href = safeURL(url) || '#';
@@ -100,11 +105,12 @@ function card(item) {
   const lines = phrase.split('<br>');
   lines.forEach((line, i) => { if (i) artText.append(document.createElement('br')); artText.append(document.createTextNode(line)); });
   art.append(artText); cover.append(art);
-  if (safeURL(item.image)) {
+  const imgSrc = safeImageSrc(item.image);
+  if (imgSrc) {
     const img = el('img');
     img.alt = 'Exemplo da fonte: ' + item.title;
     img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
-    img.src = safeURL(item.image);
+    img.src = imgSrc;
     img.style.position = 'relative';
     img.addEventListener('error', () => img.remove(), { once: true });
     cover.append(img);

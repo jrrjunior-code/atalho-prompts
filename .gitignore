@@ -5,4 +5,6 @@ test-results/
 *.jpeg
 *.png
 *.webp
+!thumbs/*.webp
+!atalho-astro/public/thumbs/*.webp
 brandkit/

@@ -5,13 +5,13 @@ import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
 const cache = new Map();
 http.createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
     const relative = pathname === '/' ? 'index.html' : pathname.slice(1);
-    if (!['index.html', 'styles.css', 'app.js', 'favicon.svg'].includes(relative) && !/^data\/[\w.-]+\.json$/.test(relative)) {
+    if (!['index.html', 'styles.css', 'app.js', 'favicon.svg'].includes(relative) && !/^data\/[\w.-]+\.json$/.test(relative) && !/^thumbs\/[\w.-]+\.webp$/.test(relative)) {
       res.writeHead(404); return res.end('Não encontrado');
     }
     const file = path.join(root, relative);

@@ -16,6 +16,7 @@ import {
   downloadJson,
   getCategoryLabel,
   debounce,
+  imageSrc,
 } from '@/utils/helpers';
 import type { Action, PromptMeta, Category, Language, SortOrder, ViewMode } from '@/types';
 
@@ -88,7 +89,7 @@ function createCardHTML(item: PromptMeta, sourceName: string, sourceModel: strin
   const categoryLabel = getCategoryLabel(item.category);
   const title = escapeHtml(item.title);
   const id = escapeHtml(item.id);
-  const safeImage = httpUrl(item.image);
+  const safeImage = escapeHtml(imageSrc(item.image));
   const sourceUrl = httpUrl(item.origins[0]?.url);
   const description = item.description || '';
   return `

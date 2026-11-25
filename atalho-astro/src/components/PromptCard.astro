@@ -4,6 +4,8 @@
  * Individual prompt card for the catalog grid
  */
 
+import { imageSrc } from '@/utils/helpers';
+
 interface Props {
   item: {
     id: string;
@@ -51,7 +53,7 @@ const look = item.category;
 const categoryLabel = categoryNames[look] || look;
 const symbol = categoryIcons[look] || '•';
 const phrase = categoryPhrases[look] || '';
-const safeImage = item.image && /^https?:\/\//.test(item.image) ? item.image : '';
+const safeImage = imageSrc(item.image);
 ---
 
 <article class="prompt-card" role="listitem">

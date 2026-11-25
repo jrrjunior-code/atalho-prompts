@@ -231,3 +231,15 @@ export const getCategoryPhrase = (category: string): string => {
   };
   return phrases[category] || '';
 };
+const LOCAL_THUMB_PATTERN = /^thumbs\/[\w.-]+\.webp$/i;
+
+// Caminhos locais são prefixados com a base do deploy; URLs absolutas passam direto.
+export const imageSrc = (value?: string): string => {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  if (LOCAL_THUMB_PATTERN.test(value)) {
+    const base = import.meta.env.BASE_URL || '/';
+    return (base.endsWith('/') ? base : `${base}/`) + value;
+  }
+  return '';
+};

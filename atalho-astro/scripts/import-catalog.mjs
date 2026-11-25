@@ -5,6 +5,7 @@
  */
 
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
@@ -127,11 +128,16 @@ async function main() {
   for (const cat of maestroData.categories) {
     for (const item of cat.items) {
       const body = item.prompt || `Use a imagem enviada como referência, se houver. Aplique o atalho personalizado ${item.code}: ${item.description} Preserve as características reconhecíveis do assunto principal. Defina uma composição intencional, iluminação coerente e detalhes naturais. Entregue a imagem final em ${item.format || '4:5'}, sem marca-d'água.`;
+      // Thumbs presentes em public/thumbs/ têm prioridade sobre o hotlink da fonte.
+      const localThumb = path.join(ROOT, 'public', 'thumbs', `maestro-${item.number}.webp`);
+      const image = existsSync(localThumb)
+        ? `thumbs/maestro-${item.number}.webp`
+        : sMaestro.url + 'assets/thumbs/' + item.number + '.webp?v=300';
       add('maestro', item.number, item.description.replace(/\.$/, ''), body, 'imagens', {
         shortcut: item.code,
         description: cat.name,
         language: 'pt',
-        image: sMaestro.url + 'assets/thumbs/' + item.number + '.webp?v=300',
+        image,
         url: sMaestro.url,
         featured: ['/albumcover', '/editorial', '/goldenhour', '/cinematic', '/product'].includes(item.code),
       });

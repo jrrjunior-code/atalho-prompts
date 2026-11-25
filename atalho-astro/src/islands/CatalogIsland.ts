@@ -22,6 +22,7 @@ import {
   downloadJson,
   getCategoryLabel,
   debounce,
+  imageSrc,
 } from '@/utils/helpers';
 import type { PromptMeta, Category, Language, SortOrder, ViewMode } from '@/types';
 
@@ -187,7 +188,7 @@ function createCardHTML(item: PromptMeta, sourceName: string, sourceModel: strin
   const categoryLabel = categoryNames[look] || look;
   const symbol = categoryIcons[look] || '•';
   const phrase = categoryPhrases[look] || '';
-  const safeImage = item.image && /^https?:\/\//.test(item.image) ? item.image : '';
+  const safeImage = imageSrc(item.image);
 
   const phraseLines = phrase.split('<br>').map((line, i) =>
     i > 0 ? `<br>${line}` : line
